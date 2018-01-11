@@ -217,6 +217,7 @@ bool EventCleaner::filter(edm::Event& evt, const edm::EventSetup& iSetup) {
   if ( ntrigs > 0 ) { 
     for ( size_t i = 0; i < ntrigs; ++i) {
       const string& myhltpath = hltPaths_.at(i);
+      // cout << "hltPaths_.at(i) =" << hltPaths_.at(i)<<endl;
       vector<string>::const_iterator it;
       for (it = h_trigName.product()->begin(); it != (h_trigName.product())->end(); ++it ) {
         if ( it->find(myhltpath) < std::string::npos) {
@@ -320,6 +321,15 @@ bool EventCleaner::filter(edm::Event& evt, const edm::EventSetup& iSetup) {
     if ( vlqTtZ.size() == 2 ) evttype = "EvtType_MC_tZtZ" ; 
     if ( vlqTtH.size() == 2 ) evttype = "EvtType_MC_tHtH" ; 
     if ( vlqTbW.size() == 2 ) evttype = "EvtType_MC_bWbW" ; 
+
+    //Single Tprime
+    //if ( vlqTtZ.size() == 2 ) evttype = "EvtType_MC_tZtZ" ;
+    if ( vlqTtH.size() == 1 ) evttype = "EvtType_MC_tH" ;
+    // if ( vlqTbW.size() == 2 ) evttype = "EvtType_MC_bWbW" ;
+
+
+
+
 
     if ( vlqTtZ.size() == 1 && vlqTtH.size() == 1 ) evttype = "EvtType_MC_tZtH" ; 
     if ( vlqTtZ.size() == 1 && vlqTbW.size() == 1 ) evttype = "EvtType_MC_tZbW" ; 
