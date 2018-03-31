@@ -3917,7 +3917,7 @@ bool OS2LAna::filter(edm::Event& evt, const edm::EventSetup& iSetup) {
 		    if ((gen1.getPdgID() == -6 && gen1.getMom0PdgID()== -8000001) || (gen1.getPdgID() == 6 && gen1.getMom0PdgID()== -8000001)){ Topgen1 = gen1.getP4();}
 		    else if ((gen1.getPdgID() == 6 && gen1.getMom0PdgID()== 8000001) || (gen1.getPdgID() == -6 && gen1.getMom0PdgID()== 8000001) ){ Topgen2 = gen1.getP4();}
 		    if (goodTopTaggedJets.at(i).getP4().DeltaR(Topgen1) < 0.8 || goodTopTaggedJets.at(i).getP4().DeltaR(Topgen2)< 0.8){
-		      h1_["ptTmatched_st1000"] -> Fill((goodTopTaggedJets.at(i)).getPt(), evtwt) ;
+		      //   h1_["ptTmatched_st1000"] -> Fill((goodTopTaggedJets.at(i)).getPt(), evtwt) ;
 		      matchedtop = true;
 		      break;
 		    }
@@ -3941,7 +3941,7 @@ bool OS2LAna::filter(edm::Event& evt, const edm::EventSetup& iSetup) {
 		else { h1_["ptTnonmatched_st1000"] -> Fill((goodTopTaggedJets.at(i)).getPt(), evtwt) ;}
 	    }//end toptagged
 	  }
-      
+	  /*      
 	  for (unsigned int i=0; i< goodHTaggedJets.size();i++){
             TLorentzVector Hgen1, Hgen2;
             bool matchedH = false;
@@ -3956,10 +3956,76 @@ bool OS2LAna::filter(edm::Event& evt, const edm::EventSetup& iSetup) {
             if (matchedH == true){h1_["ptHmatched_st1000"] -> Fill((goodHTaggedJets.at(i)).getPt(), evtwt) ;}
             else { h1_["ptHnonmatched_st1000"] -> Fill((goodHTaggedJets.at(i)).getPt(), evtwt) ;}
           }//end Htagged     
+	  */
+
+	  for (unsigned int i=0; i< goodHTaggedJets.size();i++){
+	    TLorentzVector Topgen1,Topgen2,Hgen1, Hgen2;;
+	    //bool matchedtop = false;
+	    // bool matchedH = false;
+	    if (goodTopTaggedJets.size()>0){
+	      for (unsigned int j=0; j< goodTopTaggedJets.size();j++){
+		bool matchedtop = false;
+		bool matchedH = false;
+		if (goodHTaggedJets.at(i).getIndex()== goodTopTaggedJets.at(j).getIndex()){
+		  for (auto& gen1 : genPartsInfo){
+		    if ((gen1.getPdgID() == -6 && gen1.getMom0PdgID()== -8000001) || (gen1.getPdgID() == 6 && gen1.getMom0PdgID()== -8000001)){ Topgen1 = gen1.getP4();}
+		    else if ((gen1.getPdgID() == 6 && gen1.getMom0PdgID()== 8000001) || (gen1.getPdgID() == -6 && gen1.getMom0PdgID()== 8000001) ){ Topgen2 = gen1.getP4();}
+		    else if ((gen1.getPdgID() == -25 && gen1.getMom0PdgID()== -8000001)|| (gen1.getPdgID() == 25 && gen1.getMom0PdgID()== -8000001)){ Hgen1 = gen1.getP4();}
+		    else if ((gen1.getPdgID() == 25 && gen1.getMom0PdgID()== 8000001)|| (gen1.getPdgID() == -25 && gen1.getMom0PdgID()== 8000001)){ Hgen2 = gen1.getP4();}
+		    
+
+		    if (goodTopTaggedJets.at(j).getP4().DeltaR(Topgen1) < 0.8 || goodTopTaggedJets.at(j).getP4().DeltaR(Topgen2)< 0.8){
+		      matchedtop = true;
+		      // h1_["ptTmatched_st1000"] -> Fill((goodHTaggedJets.at(i)).getPt(), evtwt) ;
+		      //break;
+		    }
+		    else if (goodHTaggedJets.at(i).getP4().DeltaR(Hgen1) < 0.8 || goodHTaggedJets.at(i).getP4().DeltaR(Hgen2)< 0.8){
+		      matchedH = true;
+		      //break;
+		     
+		    }
+		   
+		    //  cout<< " matchedtop ="<< matchedtop <<endl;
+		    // cout<< " matchedH ="<< matchedH <<endl;
+		    // cout <<" end ***** " <<endl;
+		    if (!matchedtop && matchedH){h1_["ptHmatched_st1000"] -> Fill((goodHTaggedJets.at(i)).getPt(), evtwt) ; break;}
+		    else if (matchedtop && !matchedH){break;}
+		  }
+		}
+
+		else{
+		  for (auto& gen1 : genPartsInfo){
+		    if ((gen1.getPdgID() == -25 && gen1.getMom0PdgID()== -8000001) || (gen1.getPdgID() == 25 && gen1.getMom0PdgID()== -8000001)){ Hgen1 = gen1.getP4();}
+		    else if ((gen1.getPdgID() == 25 && gen1.getMom0PdgID()== 8000001) || (gen1.getPdgID() == -25 && gen1.getMom0PdgID()== 8000001) ){ Hgen2 = gen1.getP4();}
+		    if (goodHTaggedJets.at(i).getP4().DeltaR(Hgen1) < 0.8 || goodHTaggedJets.at(i).getP4().DeltaR(Hgen2)< 0.8){
+		      //   h1_["ptTmatched_st1000"] -> Fill((goodHTaggedJets.at(i)).getPt(), evtwt) ;
+		      matchedH = true;
+		      break;
+		    }
+		  }
+		  if (matchedH == true){h1_["ptHmatched_st1000"] -> Fill((goodHTaggedJets.at(i)).getPt(), evtwt) ;}
+		  else { h1_["ptHnonmatched_st1000"] -> Fill((goodHTaggedJets.at(i)).getPt(), evtwt) ;}
+		}
+	      }
+	    }
+	    else{
+	      bool matchedH = false;
+		for (auto& gen1 : genPartsInfo){
+		  if ((gen1.getPdgID() == -25 && gen1.getMom0PdgID()== -8000001) || (gen1.getPdgID() == 25 && gen1.getMom0PdgID()== -8000001)){ Hgen1 = gen1.getP4();}
+		  else if ((gen1.getPdgID() == 25 && gen1.getMom0PdgID()== 8000001) || (gen1.getPdgID() == -25 && gen1.getMom0PdgID()== 8000001) ){ Hgen2 = gen1.getP4();}
+		  if (goodHTaggedJets.at(i).getP4().DeltaR(Hgen1) < 0.8 || goodHTaggedJets.at(i).getP4().DeltaR(Hgen2)< 0.8){
+		    matchedH = true;
+		    break;
+		  }
+		}
+		if (matchedH == true){h1_["ptHmatched_st1000"] -> Fill((goodHTaggedJets.at(i)).getPt(), evtwt) ;}
+		else { h1_["ptHnonmatched_st1000"] -> Fill((goodHTaggedJets.at(i)).getPt(), evtwt) ;}
+	    }//end Htagged
+	  }
 
 	  
 	  for (unsigned int i=0; i< goodWTaggedJets.size();i++){
-            TLorentzVector Wgen1, Wgen2, Wgen3,Wgen4, Wgen5,Wgen6;
+            TLorentzVector Wgen1, Wgen2, Wgen3,Wgen4, Wgen5,Wgen6, Wgen7,Wgen8;
             bool matchedW = false;
             for (auto& gen1 : genPartsInfo){
               if ((gen1.getPdgID() == -24 && gen1.getMom0PdgID()== -8000001) || (gen1.getPdgID() == 24 && gen1.getMom0PdgID()== -8000001)){ Wgen1 = gen1.getP4();}
@@ -3968,8 +4034,11 @@ bool OS2LAna::filter(edm::Event& evt, const edm::EventSetup& iSetup) {
 	      else if ((gen1.getPdgID() == -23 && gen1.getMom0PdgID()== -8000001) || (gen1.getPdgID() == 23 && gen1.getMom0PdgID()== -8000001)){ Wgen4 = gen1.getP4();}
               else if ((gen1.getPdgID() == -24 && gen1.getMom0PdgID()== 6) || (gen1.getPdgID() == 24 && gen1.getMom0PdgID()== 6)){ Wgen5 = gen1.getP4();}
               else if ((gen1.getPdgID() == 24 && gen1.getMom0PdgID()== -6) || (gen1.getPdgID() == -24 && gen1.getMom0PdgID()== -6)){ Wgen6 = gen1.getP4();}
-            
-	      if (goodWTaggedJets.at(i).getP4().DeltaR(Wgen1) < 0.8 || goodWTaggedJets.at(i).getP4().DeltaR(Wgen2)< 0.8 || goodWTaggedJets.at(i).getP4().DeltaR(Wgen3) < 0.8 || goodWTaggedJets.at(i).getP4().DeltaR(Wgen4)< 0.8 || goodWTaggedJets.at(i).getP4().DeltaR(Wgen5) < 0.8 || goodWTaggedJets.at(i).getP4().DeltaR(Wgen6)< 0.8 ){
+	      else if ((gen1.getPdgID() == 25 && gen1.getMom0PdgID()== 8000001) || (gen1.getPdgID() == -25 && gen1.getMom0PdgID()== 8000001)){ Wgen5 = gen1.getP4();}
+              else if ((gen1.getPdgID() == -25 && gen1.getMom0PdgID()== -8000001) || (gen1.getPdgID() == 25 && gen1.getMom0PdgID()== -8000001)){ Wgen6 = gen1.getP4();}            
+
+
+	      if (goodWTaggedJets.at(i).getP4().DeltaR(Wgen1) < 0.8 || goodWTaggedJets.at(i).getP4().DeltaR(Wgen2)< 0.8 || goodWTaggedJets.at(i).getP4().DeltaR(Wgen3) < 0.8 || goodWTaggedJets.at(i).getP4().DeltaR(Wgen4)< 0.8 || goodWTaggedJets.at(i).getP4().DeltaR(Wgen5) < 0.8 || goodWTaggedJets.at(i).getP4().DeltaR(Wgen6)< 0.8 || goodWTaggedJets.at(i).getP4().DeltaR(Wgen7) < 0.8 || goodWTaggedJets.at(i).getP4().DeltaR(Wgen8)< 0.8 ){
                 matchedW = true;
                 break;
               }
