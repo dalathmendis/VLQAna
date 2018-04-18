@@ -265,6 +265,12 @@ bool EventCleaner::filter(edm::Event& evt, const edm::EventSetup& iSetup) {
   const int npv(*h_npv) ; 
 
   double evtwtGen(1.0) ; 
+  if ( !isData_ ) {
+    Handle<GenEventInfoProduct> h_genEvtInfoProd;
+    evt.getByToken(t_genEvtInfoProd, h_genEvtInfoProd);
+    evtwtGen = h_genEvtInfoProd->weight() ;
+    evtwtGen /= std::abs(evtwtGen) ;
+  }
   double htHat(0.0);
   std::vector<int> lhewtids;
   std::vector<double> lhewts;

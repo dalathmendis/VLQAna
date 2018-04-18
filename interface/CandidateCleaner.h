@@ -46,8 +46,8 @@ class CandidateCleaner {
 	//cout << " cleanedcands size (After ******************) = " << cleanedcands.size()<<endl;
 	}
       */
-
       
+                  
       //bug fixed
       
       void operator () (std::vector<T1>& cleanedcands, std::vector<T2> othercands) {
@@ -74,9 +74,9 @@ class CandidateCleaner {
 					 )
 			  ,cleanedcands.end()  ) ; 
     }
+        
       
-      
-      /*    
+    /*  
       //bug reintroduced 
 
       void operator () (T1& cleanedcands, T2 othercands) {
@@ -95,8 +95,8 @@ class CandidateCleaner {
 	if ( !isclean ) cleanedcands.erase(icand) ;
       }
     }
-
-*/      
+    */
+    
   private:
     double dr_;
     double ptrel_;

@@ -1,0 +1,31 @@
+#!/bin/bash                                                                                                                                                                                                                           
+
+source /cvmfs/cms.cern.ch/cmsset_default.sh
+cd /uscms_data/d3/dmendis/80xB2Gana7/CMSSW_8_0_20/src
+eval `scram runtime -sh`
+
+cd ${_CONDOR_SCRATCH_DIR}
+echo ${_CONDOR_SCRATCH_DIR}
+let "sample=${1}+1"
+cp PYTHON/SAMPLE/SAMPLE_${sample}.py .
+cp TEST/*.txt .
+cp TEST/*.root .
+cp TEST/inputFiles_cfi.py .
+cp TEST/*.csv .
+cp TEST/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt .
+cmsRun SAMPLE_${sample}.py
+rm btag-eff-subjet.root
+rm scalefactors_v4.root
+rm PU*
+rm Run*
+rm *.csv
+rm *.txt
+rm dataset*
+rm os2lana*
+rm scale*
+rm Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt
+xrdcp *.root root://cmseos.fnal.gov/OUTPUT/SAMPLE
+rm SAMPLE_${sample}.py
+rm *.root
+ls
+echo "DONE!"

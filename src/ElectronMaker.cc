@@ -99,7 +99,9 @@ void ElectronMaker::operator () (edm::Event& evt, vlq::ElectronCollection& elect
     else passId = false ; 
     
     if (elPt > elPtMin_ && elPt < elPtMax_ && elscAbsEta < elAbsEtaMax_ && passId ){
-      vlq::Electron electron ; 
+    
+    // if (elPt > elPtMin_ && elPt < elPtMax_ && elscAbsEta < elAbsEtaMax_){    
+    vlq::Electron electron ; 
       TLorentzVector  elP4;
       elP4.SetPtEtaPhiE( (h_elPt.product())->at(iel), (h_elEta.product())->at(iel), (h_elPhi.product())->at(iel), (h_elE.product())->at(iel) ) ;
       electron.setP4                (elP4)                                      ;
